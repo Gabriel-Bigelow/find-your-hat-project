@@ -10,8 +10,8 @@
 
 const prompt = require('prompt-sync')();
 
-const name = prompt('What is your name? ');
-console.log(`Hey there ${name}`);
+/*const name = prompt('What is your name? ');
+console.log(`Hey there ${name}`);*/
 
 
 const hat = '^';
@@ -25,7 +25,10 @@ class Field {
     }
 
     print () {
-        console.log(String(this.field.join()));
+        const strField = this.field;
+        for(let item in this.field){
+            console.log(strField[item].join(''));
+        }
     }
 }
 
