@@ -31,7 +31,6 @@ class Field {
         let playerInHole = false;
         let playerOffBoard = false;
 
-        let field = this.field;
         
     
         for (let row in this.field){
@@ -43,22 +42,22 @@ class Field {
             }
         }
         
-        let markPath = function () {
-            field[r][c] = pathCharacter;
+        let markPath = function (target) {
+            target.field[r][c] = pathCharacter;
         }
         
-        let moveCharacter = function () {
+        let moveCharacter = function (target) {
             r = r-yPos;
             c = c-xPos;
 
-            if (field[r][c] === hole){
+            if (target.field[r][c] === hole){
                 playerInHole = true;
-            } else if (r > field.length - 1 || r < 0) {
+            } else if (r > target.field.length - 1 || r < 0) {
                 playerOffBoard = true;
-            } else if (c > field[r].length - 1 || c < 0) {
+            } else if (c > target.field[r].length - 1 || c < 0) {
                 playerOffBoard = true;
             } else {
-                field[r][c] = player;
+                target.field[r][c] = player;
             }
         }
 
@@ -73,22 +72,25 @@ class Field {
             xPos = -1;
         }
 
-        markPath();
-        moveCharacter();
-        this.field = field;
+        markPath(this);
+        moveCharacter(this);
         this.print();
 
-        if (playerInHole === true){
-            console.log('You fell in a hole!')
-            const playAgain = prompt("Would you like to try again? Yes/No: ");
-            if (playAgain.toLowerCase() === 'yes'){
+        let endOfRound = function (target) {
+            if (playerInHole === true){
+                console.log('You fell in a hole!')
+                const playAgain = prompt("Would you like to try again? Yes/No: ");
+                if (playAgain.toLowerCase() === 'yes'){
 
+                }
+            } else if (playerOffBoard === true) {
+                console.log('You fell out of bounds!')
+            } else {
+                target.move();
             }
-        } else if (playerOffBoard === true) {
-            console.log('You fell out of bounds!')
-        } else {
-            this.move();
         }
+
+        endOfRound(this);
         
     }
 
