@@ -29,6 +29,7 @@ class Field {
         let c;
         let playerInHole = false;
         let playerOffBoard = false;
+        let playerFoundHat = false;
 
         let findPlayer = function (target) {
             for (let row in target.field){
@@ -55,6 +56,8 @@ class Field {
             } else {
                 if (target.field[r][c] === hole){
                     playerInHole = true;
+                } else if (target.field[r][c] === hat){
+                    playerFoundHat = true;
                 } else {
                     target.field[r][c] = player;
                 }                
@@ -66,6 +69,8 @@ class Field {
                 console.log('You fell in a hole! Game over.')
             } else if (playerOffBoard === true) {
                 console.log('You fell out of bounds! Game over.')
+            } else if (playerFoundHat === true) {
+                console.log('You found your hat! You win!')
             } else {
                 target.move();
             }
@@ -89,32 +94,44 @@ class Field {
         
     }
 
-
     play () {
         this.print();
         this.move();
     }
     
     generateField (rows, columns, percentage) {
+        this.field = []
+        let tileArray = [];
+
+        let tilesTotal = rows*columns;
+        let tilesHole = Math.min(Math.floor(tilesTotal * (Math.max(percentage, 0.001)/100)), tilesTotal);
+        let tilesField = tilesTotal - tilesHole - 2;
+        let tilesPlayer = 1;
+        let tilesHat = 1;
+
+        for (let i = 0; i < tilesField; i++){
+            tileArray.push(fieldCharacter)
+        }
+        for (let i = 0; i < tilesHole; i++){
+            tileArray.push(hole);
+        }
+        tileArray.push(player);
+        tileArray.push(hat);
+
         for (let i = 0; i < rows; i++){
-            this.field[rows] = fieldCharacter;
-            for (let i = 1; i < columns; i++){
-                this.field[rows][columns] = fieldCharacter;
+            this.field.push([])
+            for (let j = 0; j < columns; j++){
+                let picker = Math.floor(Math.random() * tileArray.length);
+                
+                this.field[i].push([])
+                this.field[i][j] = tileArray[picker];
+                tileArray.splice(picker, 1)
             }
         }
-
-        
-
     }
+
 }
 
-const gameArea = new Field([
-    [fieldCharacter, fieldCharacter, fieldCharacter],
-    [fieldCharacter, fieldCharacter, fieldCharacter],
-    [fieldCharacter, fieldCharacter, fieldCharacter],
-    [fieldCharacter, fieldCharacter, fieldCharacter],
-    [fieldCharacter, player, hole],
-    [fieldCharacter, pathCharacter, fieldCharacter],
-]);
-
+const gameArea = new Field();
+gameArea.generateField(5, 5, 25)
 gameArea.play();
